@@ -49,5 +49,7 @@ services:
     build:
       context: .
       dockerfile: mysql_to_elastic/docker/Dockerfile
-#    volumes:
-#      - ./mysql_to_elastic/docker/rootfs/go/src:/go/src
+      target: prod
+    depends_on:
+      - elastic_search
+      - mysql
