@@ -1,0 +1,3 @@
+shared/elastic_search/docker/rootfs/usr/share/elasticsearch/data
+shared/mysql/docker/rootfs/var/lib/mysql
+mysql_to_elastic/docker/rootfs/go/src

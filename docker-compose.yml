@@ -1,9 +1,53 @@
 version: '3.5'
 
 services:
-  go:
+#  go:
+#    build:
+#      context: .
+#      dockerfile: incoming_invoice_scans/docker/go/Dockerfile
+#    ports:
+#      - 8080:8080
+
+  elastic_search:
     build:
       context: .
-      dockerfile: docker/go/Dockerfile
+      dockerfile: shared/elastic_search/docker/Dockerfile
+    volumes:
+      - ./shared/elastic_search/docker/rootfs/usr/share/elasticsearch/config:/usr/share/elasticsearch/config
     ports:
-      - 9000:9000
+      - 9200:9200
+      - 9300:9300
+
+  elastic_sql_ui:
+    build:
+      context: .
+      dockerfile: sql_web_frontend/docker/Dockerfile
+    volumes:
+      - ./sql_web_frontend/src/site-server/site_configuration.json:/opt/site/site-server/site_configuration.json
+    ports:
+      - 9500:9500
+    depends_on:
+      - elastic_search
+
+  mysql:
+    user: mysql
+    build:
+      context: .
+      dockerfile: shared/mysql/docker/Dockerfile
+    volumes:
+      - ./shared/mysql/docker/rootfs/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./shared/mysql/docker/rootfs/etc/mysql:/etc/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=test
+      - MYSQL_USER=test
+      - MYSQL_PASSWORD=test
+      - MYSQL_DATABASE=test
+    ports:
+      - 3306:3306
+
+  from_mysql_to_elastic:
+    build:
+      context: .
+      dockerfile: mysql_to_elastic/docker/Dockerfile
+#    volumes:
+#      - ./mysql_to_elastic/docker/rootfs/go/src:/go/src

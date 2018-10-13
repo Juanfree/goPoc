@@ -1,0 +1,5 @@
+FROM docker.elastic.co/elasticsearch/elasticsearch:6.4.1
+
+RUN ./bin/elasticsearch-plugin install https://github.com/NLPchina/elasticsearch-sql/releases/download/6.4.1.0/elasticsearch-sql-6.4.1.0.zip
+
+ADD ./shared/elastic_search/docker/rootfs /
